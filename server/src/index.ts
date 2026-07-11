@@ -1,5 +1,5 @@
 import express from "express";
-import { sampleLoans } from "./data/sampleLoans";
+import { getAllLoans } from "./db";
 import { computeRiskMetrics, computeMetricsBySegment } from "./metrics";
 
 // Create the Express application — this object *is* our server.
@@ -18,16 +18,18 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", service: "credit-risk-dashboard-api" });
 });
 
-// Return the whole loan portfolio.
+// Return the whole loan portfolio (read from the database).
 app.get("/api/loans", (req, res) => {
-  res.json({ count: sampleLoans.length, loans: sampleLoans });
+  const loans = getAllLoans();
+  res.json({ count: loans.length, loans });
 });
 
 // Return credit-risk metrics for the portfolio (overall + per segment).
 app.get("/api/metrics", (req, res) => {
+  const loans = getAllLoans();
   res.json({
-    overall: computeRiskMetrics(sampleLoans),
-    bySegment: computeMetricsBySegment(sampleLoans),
+    overall: computeRiskMetrics(loans),
+    bySegment: computeMetricsBySegment(loans),
   });
 });
 
