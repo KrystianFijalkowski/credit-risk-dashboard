@@ -1,0 +1,25 @@
+# Dependencies (installed with npm — never committed, can be huge)
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment variables / secrets (NEVER commit these)
+.env
+.env.local
+
+# Local database files
+*.sqlite
+*.sqlite3
+*.db
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
