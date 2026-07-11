@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { MetricsResponse, LoansResponse } from "./types";
-import { compactPln, percent } from "./format";
+import { compactPln, percent, SEGMENT_LABEL } from "./format";
 import { RiskGauge } from "./components/RiskGauge";
 import { SegmentBars } from "./components/SegmentBars";
 import { LoansTable } from "./components/LoansTable";
@@ -20,13 +20,15 @@ function App() {
         setMetrics(m);
         setLoans(l);
       })
-      .catch(() => setError("Could not reach the API. Is the backend running?"));
+      .catch(() =>
+        setError("Nie można połączyć się z API. Czy backend działa?")
+      );
   }, []);
 
   if (error) {
     return (
       <div className="state">
-        <strong>Something went wrong</strong>
+        <strong>Coś poszło nie tak</strong>
         <span>{error}</span>
       </div>
     );
@@ -36,18 +38,18 @@ function App() {
     return (
       <div className="state">
         <div className="spinner" />
-        <span>Loading portfolio…</span>
+        <span>Wczytywanie portfela…</span>
       </div>
     );
   }
 
   const { overall, bySegment } = metrics;
-  const today = new Date().toISOString().slice(0, 10);
+  const today = new Date().toLocaleDateString("pl-PL");
 
   // Scale the default-rate bars to the riskiest segment for a clear comparison.
   const maxSegDefault = Math.max(...bySegment.map((s) => s.defaultRate));
   const defaultRows = bySegment.map((s) => ({
-    name: s.segment,
+    name: SEGMENT_LABEL[s.segment],
     fraction: s.defaultRate / maxSegDefault,
     figure: percent(s.defaultRate),
   }));
@@ -55,7 +57,7 @@ function App() {
   // Exposure bars show each segment's share of total money at risk.
   const totalExposure = bySegment.reduce((sum, s) => sum + s.totalExposure, 0);
   const exposureRows = bySegment.map((s) => ({
-    name: s.segment,
+    name: SEGMENT_LABEL[s.segment],
     fraction: s.totalExposure / totalExposure,
     figure: compactPln(s.totalExposure),
   }));
@@ -64,12 +66,12 @@ function App() {
     <div className="app">
       <header className="app-header">
         <div>
-          <div className="eyebrow">Credit Risk Analytics</div>
-          <h1>Portfolio Risk Dashboard</h1>
+          <div className="eyebrow">Analityka ryzyka kredytowego</div>
+          <h1>Panel ryzyka portfela</h1>
         </div>
         <div className="as-of">
           <span className="live-dot" />
-          <span className="mono">as of {today}</span>
+          <span className="mono">stan na {today}</span>
         </div>
       </header>
 
@@ -79,42 +81,42 @@ function App() {
       {/* Headline KPIs */}
       <div className="tiles">
         <div className="tile">
-          <div className="k-label">Total exposure</div>
+          <div className="k-label">Całkowita ekspozycja</div>
           <div className="k-value">{compactPln(overall.totalExposure)}</div>
-          <div className="k-sub">money still at risk</div>
+          <div className="k-sub">kwota wciąż zagrożona</div>
         </div>
         <div className="tile">
-          <div className="k-label">Avg debt-to-income</div>
+          <div className="k-label">Śr. dług do dochodu</div>
           <div className="k-value">
-            {overall.averageDebtToIncome.toFixed(2)}
+            {overall.averageDebtToIncome.toFixed(2).replace(".", ",")}
           </div>
-          <div className="k-sub">loan ÷ annual income</div>
+          <div className="k-sub">kredyt ÷ roczny dochód</div>
         </div>
         <div className="tile">
-          <div className="k-label">Loans</div>
+          <div className="k-label">Kredyty</div>
           <div className="k-value">{overall.totalLoans}</div>
-          <div className="k-sub">in the portfolio</div>
+          <div className="k-sub">w portfelu</div>
         </div>
         <div className="tile">
-          <div className="k-label">Defaults</div>
+          <div className="k-label">Niespłacone</div>
           <div className="k-value" style={{ color: "var(--risk)" }}>
             {overall.defaultCount}
           </div>
-          <div className="k-sub">{percent(overall.defaultRate)} of loans</div>
+          <div className="k-sub">{percent(overall.defaultRate)} kredytów</div>
         </div>
       </div>
 
       {/* Per-segment breakdown */}
       <section className="section">
-        <h2 className="section-title">Risk by customer segment</h2>
+        <h2 className="section-title">Ryzyko wg segmentu klienta</h2>
         <div className="seg-grid">
           <SegmentBars
-            head="Default rate"
+            head="Wskaźnik niespłacalności"
             rows={defaultRows}
             color="var(--risk)"
           />
           <SegmentBars
-            head="Exposure share"
+            head="Udział w ekspozycji"
             rows={exposureRows}
             color="var(--accent)"
           />
@@ -123,7 +125,7 @@ function App() {
 
       {/* Recent loans */}
       <section className="section">
-        <h2 className="section-title">Recent loans</h2>
+        <h2 className="section-title">Ostatnie kredyty</h2>
         <LoansTable loans={loans.loans.slice(0, 12)} />
       </section>
     </div>

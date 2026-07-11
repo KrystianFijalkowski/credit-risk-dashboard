@@ -22,13 +22,13 @@ export function RiskGauge({
   return (
     <div className="gauge">
       <div>
-        <div className="gauge-label">Portfolio default rate</div>
+        <div className="gauge-label">Wskaźnik niespłacalności portfela</div>
         <div className="gauge-value" style={{ color }}>
           {percent(defaultRate)}
         </div>
         <div className="gauge-caption">
-          {overLimit ? "Above" : "Within"} the {percent(threshold, 0)}{" "}
-          risk-appetite limit
+          {overLimit ? "Powyżej" : "W granicach"} limitu apetytu na ryzyko (
+          {percent(threshold, 0)})
         </div>
       </div>
 
@@ -39,7 +39,7 @@ export function RiskGauge({
           aria-valuenow={Number((defaultRate * 100).toFixed(1))}
           aria-valuemin={0}
           aria-valuemax={maxScale * 100}
-          aria-label="Portfolio default rate"
+          aria-label="Wskaźnik niespłacalności portfela"
         >
           <div
             className="gauge-fill"
