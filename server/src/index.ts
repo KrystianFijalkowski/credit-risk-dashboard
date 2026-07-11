@@ -1,4 +1,5 @@
 import express from "express";
+import { sampleLoans } from "./data/sampleLoans";
 
 // Create the Express application — this object *is* our server.
 const app = express();
@@ -14,6 +15,11 @@ const PORT = 4000;
 // which lets us confirm the server is alive and responding.
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", service: "credit-risk-dashboard-api" });
+});
+
+// Return the whole loan portfolio.
+app.get("/api/loans", (req, res) => {
+  res.json({ count: sampleLoans.length, loans: sampleLoans });
 });
 
 // Start the server and keep it listening for incoming requests.
