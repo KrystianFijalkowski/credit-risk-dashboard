@@ -3,6 +3,7 @@ import type { MetricsResponse, LoansResponse } from "./types";
 import { compactPln, percent, SEGMENT_LABEL } from "./format";
 import { RiskGauge } from "./components/RiskGauge";
 import { SegmentBars } from "./components/SegmentBars";
+import { DtiDefaultChart } from "./components/DtiDefaultChart";
 import { LoansTable } from "./components/LoansTable";
 
 function App() {
@@ -121,6 +122,12 @@ function App() {
             color="var(--accent)"
           />
         </div>
+      </section>
+
+      {/* DTI -> default relationship */}
+      <section className="section">
+        <h2 className="section-title">Ryzyko wg poziomu zadłużenia</h2>
+        <DtiDefaultChart loans={loans.loans} />
       </section>
 
       {/* Recent loans */}
