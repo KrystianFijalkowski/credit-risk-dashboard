@@ -1,5 +1,6 @@
 import express from "express";
 import { sampleLoans } from "./data/sampleLoans";
+import { computeRiskMetrics, computeMetricsBySegment } from "./metrics";
 
 // Create the Express application — this object *is* our server.
 const app = express();
@@ -20,6 +21,14 @@ app.get("/api/health", (req, res) => {
 // Return the whole loan portfolio.
 app.get("/api/loans", (req, res) => {
   res.json({ count: sampleLoans.length, loans: sampleLoans });
+});
+
+// Return credit-risk metrics for the portfolio (overall + per segment).
+app.get("/api/metrics", (req, res) => {
+  res.json({
+    overall: computeRiskMetrics(sampleLoans),
+    bySegment: computeMetricsBySegment(sampleLoans),
+  });
 });
 
 // Start the server and keep it listening for incoming requests.
