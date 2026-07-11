@@ -1,0 +1,450 @@
+/* =========================================================================
+   Credit Risk Dashboard — design system
+   Aesthetic: a precise "risk instrument", not a generic SaaS dashboard.
+   ========================================================================= */
+
+:root {
+  /* --- Palette --------------------------------------------------------- */
+  --ink: #16233b; /* primary text — deep navy ink */
+  --ink-2: #55637a; /* secondary text */
+  --ink-3: #8b97ab; /* muted / captions */
+  --paper: #eef1f5; /* app background */
+  --surface: #ffffff; /* cards */
+  --surface-2: #f7f9fc; /* inset panels, table header */
+  --line: #dbe1e9; /* hairline borders */
+
+  /* Risk semantics — used only for their meaning, never as decoration */
+  --good: #1f8a70;
+  --warn: #c9860a;
+  --risk: #c6413b;
+  --accent: #274b8f;
+
+  /* --- Typography ------------------------------------------------------ */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-ui: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* --- Spacing scale --------------------------------------------------- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 2px rgba(22, 35, 59, 0.04), 0 8px 24px rgba(22, 35, 59, 0.05);
+}
+
+/* --- Reset ------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-ui);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tabular figures everywhere numbers matter — the "ledger" signature */
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================================
+   Layout shell
+   ========================================================================= */
+.app {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--s-6) var(--s-5) var(--s-7);
+}
+
+.app-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding-bottom: var(--s-4);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: var(--s-6);
+}
+
+.app-header h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+}
+
+.app-header .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: var(--s-1);
+}
+
+.app-header .as-of {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--good);
+  box-shadow: 0 0 0 3px rgba(31, 138, 112, 0.15);
+}
+
+.section {
+  margin-top: var(--s-6);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  margin-bottom: var(--s-4);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+/* =========================================================================
+   Signature: default-rate gauge vs risk-appetite threshold
+   ========================================================================= */
+.gauge {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--s-6);
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) 1fr;
+  gap: var(--s-6);
+  align-items: center;
+}
+
+.gauge-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.gauge-value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 68px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: var(--s-2) 0 var(--s-1);
+}
+
+.gauge-caption {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.gauge-track {
+  position: relative;
+  height: 44px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.gauge-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gauge-threshold {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  width: 2px;
+  background: var(--ink);
+}
+.gauge-threshold::after {
+  content: attr(data-label);
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+}
+
+.gauge-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--s-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+/* =========================================================================
+   KPI stat tiles
+   ========================================================================= */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-4);
+  margin-top: var(--s-4);
+}
+
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s-5);
+  box-shadow: var(--shadow);
+}
+
+.tile .k-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.tile .k-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 30px;
+  letter-spacing: -0.01em;
+  margin-top: var(--s-3);
+  color: var(--ink);
+}
+
+.tile .k-sub {
+  font-size: 12px;
+  color: var(--ink-2);
+  margin-top: var(--s-1);
+}
+
+/* =========================================================================
+   Segment panels & bars
+   ========================================================================= */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--s-5);
+}
+
+.seg-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-4);
+}
+
+.seg-row {
+  display: grid;
+  grid-template-columns: 92px 1fr 64px;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) 0;
+}
+.seg-row + .seg-row {
+  border-top: 1px solid var(--line);
+}
+
+.seg-name {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.seg-track {
+  height: 10px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.seg-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.seg-figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  text-align: right;
+  color: var(--ink);
+}
+
+.panel-head {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: var(--s-2);
+}
+
+/* =========================================================================
+   Loans table
+   ========================================================================= */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+thead th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  background: var(--surface-2);
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+tbody tr:last-child td {
+  border-bottom: none;
+}
+tbody tr:hover {
+  background: var(--surface-2);
+}
+
+td.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Status pills */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 999px;
+  text-transform: capitalize;
+}
+.pill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.pill.default {
+  color: var(--risk);
+  background: rgba(198, 65, 59, 0.1);
+}
+.pill.active {
+  color: var(--accent);
+  background: rgba(39, 75, 143, 0.1);
+}
+.pill.paid_off {
+  color: var(--good);
+  background: rgba(31, 138, 112, 0.12);
+}
+
+/* =========================================================================
+   Loading / error states
+   ========================================================================= */
+.state {
+  display: grid;
+  place-items: center;
+  min-height: 60vh;
+  text-align: center;
+  color: var(--ink-2);
+  gap: var(--s-3);
+}
+.state .spinner {
+  width: 26px;
+  height: 26px;
+  border: 3px solid var(--line);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================================
+   Responsive
+   ========================================================================= */
+@media (max-width: 860px) {
+  .tiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .gauge {
+    grid-template-columns: 1fr;
+    gap: var(--s-5);
+  }
+  .seg-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
