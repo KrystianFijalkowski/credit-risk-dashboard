@@ -64,7 +64,30 @@ function seedIfEmpty(): void {
 
 seedIfEmpty();
 
-// Read every loan out of the database.
-export function getAllLoans(): Loan[] {
-  return db.prepare("SELECT * FROM loans ORDER BY id").all() as Loan[];
+// Optional filters for querying the portfolio.
+export interface LoanFilters {
+  segment?: string; // e.g. "retail"
+  year?: string; // origination year, e.g. "2023"
+}
+
+// Read loans out of the database, optionally filtered.
+// Values go in as parameters (?) — never string-concatenated — which keeps
+// the query safe from SQL injection.
+export function getAllLoans(filters: LoanFilters = {}): Loan[] {
+  const clauses: string[] = [];
+  const params: string[] = [];
+
+  if (filters.segment) {
+    clauses.push("segment = ?");
+    params.push(filters.segment);
+  }
+  if (filters.year) {
+    clauses.push("issueDate LIKE ?");
+    params.push(`${filters.year}%`);
+  }
+
+  const where = clauses.length ? `WHERE ${clauses.join(" AND ")}` : "";
+  return db
+    .prepare(`SELECT * FROM loans ${where} ORDER BY id`)
+    .all(...params) as Loan[];
 }
