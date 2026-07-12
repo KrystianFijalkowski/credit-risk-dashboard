@@ -1,4 +1,5 @@
 import type { Loan } from "../types";
+import { useLang, type StatusKey } from "../i18n";
 import { percent } from "../format";
 
 interface PortfolioDonutProps {
@@ -6,13 +7,14 @@ interface PortfolioDonutProps {
 }
 
 // Loan statuses in a fixed order, each with its reserved status color.
-const STATUS = [
-  { key: "active", label: "Aktywne", color: "var(--accent)" },
-  { key: "paid_off", label: "Spłacone", color: "var(--good)" },
-  { key: "default", label: "Default", color: "var(--risk)" },
-] as const;
+const STATUS: { key: StatusKey; color: string }[] = [
+  { key: "active", color: "var(--accent)" },
+  { key: "paid_off", color: "var(--good)" },
+  { key: "default", color: "var(--risk)" },
+];
 
 export function PortfolioDonut({ loans }: PortfolioDonutProps) {
+  const { lang, t } = useLang();
   const total = loans.length || 1;
 
   // Count loans per status and lay them out around the ring.
@@ -28,13 +30,23 @@ export function PortfolioDonut({ loans }: PortfolioDonutProps) {
 
   return (
     <div className="panel">
-      <div className="panel-head">Struktura portfela wg statusu</div>
+      <div className="panel-head">{t.donutHead}</div>
       <div className="donut-wrap">
-        <svg viewBox="0 0 160 160" className="donut" role="img"
-          aria-label="Struktura portfela wg statusu">
+        <svg
+          viewBox="0 0 160 160"
+          className="donut"
+          role="img"
+          aria-label={t.donutHead}
+        >
           <g transform="rotate(-90 80 80)">
-            <circle cx="80" cy="80" r="60" fill="none" stroke="var(--surface-2)"
-              strokeWidth="20" />
+            <circle
+              cx="80"
+              cy="80"
+              r="60"
+              fill="none"
+              stroke="var(--surface-2)"
+              strokeWidth="20"
+            />
             {slices.map((s) => (
               <circle
                 key={s.key}
@@ -54,7 +66,7 @@ export function PortfolioDonut({ loans }: PortfolioDonutProps) {
             {loans.length}
           </text>
           <text x="80" y="95" textAnchor="middle" className="donut-lbl">
-            kredytów
+            {t.donutCenter}
           </text>
         </svg>
 
@@ -62,9 +74,9 @@ export function PortfolioDonut({ loans }: PortfolioDonutProps) {
           {slices.map((s) => (
             <li key={s.key}>
               <span className="dot" style={{ background: s.color }} />
-              <span className="lg-label">{s.label}</span>
+              <span className="lg-label">{t.status[s.key]}</span>
               <span className="lg-val">
-                {s.count} · {percent(s.count / total)}
+                {s.count} · {percent(s.count / total, lang)}
               </span>
             </li>
           ))}

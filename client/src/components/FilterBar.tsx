@@ -1,3 +1,5 @@
+import { useLang, type SegmentKey } from "../i18n";
+
 interface FilterBarProps {
   segment: string;
   year: string;
@@ -5,43 +7,51 @@ interface FilterBarProps {
   onYear: (value: string) => void;
 }
 
-const SEGMENTS = [
-  { value: "all", label: "Wszystkie" },
-  { value: "retail", label: "Detaliczny" },
-  { value: "sme", label: "MŚP" },
-  { value: "corporate", label: "Korporacyjny" },
-];
-
-const YEARS = ["all", "2021", "2022", "2023", "2024", "2025"];
+const SEGMENT_VALUES: SegmentKey[] = ["retail", "sme", "corporate"];
+const YEARS = ["2021", "2022", "2023", "2024", "2025"];
 
 export function FilterBar({ segment, year, onSegment, onYear }: FilterBarProps) {
+  const { t } = useLang();
+
   return (
     <div className="filters">
       <div className="filter-group">
-        <span className="filter-label">Segment</span>
+        <span className="filter-label">{t.filterSegment}</span>
         <div className="chips">
-          {SEGMENTS.map((s) => (
+          <button
+            className={`chip ${segment === "all" ? "active" : ""}`}
+            onClick={() => onSegment("all")}
+          >
+            {t.all}
+          </button>
+          {SEGMENT_VALUES.map((s) => (
             <button
-              key={s.value}
-              className={`chip ${segment === s.value ? "active" : ""}`}
-              onClick={() => onSegment(s.value)}
+              key={s}
+              className={`chip ${segment === s ? "active" : ""}`}
+              onClick={() => onSegment(s)}
             >
-              {s.label}
+              {t.segment[s]}
             </button>
           ))}
         </div>
       </div>
 
       <div className="filter-group">
-        <span className="filter-label">Rok udzielenia</span>
+        <span className="filter-label">{t.filterYear}</span>
         <div className="chips">
+          <button
+            className={`chip ${year === "all" ? "active" : ""}`}
+            onClick={() => onYear("all")}
+          >
+            {t.all}
+          </button>
           {YEARS.map((y) => (
             <button
               key={y}
               className={`chip ${year === y ? "active" : ""}`}
               onClick={() => onYear(y)}
             >
-              {y === "all" ? "Wszystkie" : y}
+              {y}
             </button>
           ))}
         </div>

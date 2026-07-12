@@ -1,41 +1,44 @@
 import type { Loan } from "../types";
-import { groupedPln, percent, SEGMENT_LABEL, STATUS_LABEL } from "../format";
+import { useLang } from "../i18n";
+import { grouped, percent, decimal } from "../format";
 
 interface LoansTableProps {
   loans: Loan[];
 }
 
 export function LoansTable({ loans }: LoansTableProps) {
+  const { lang, t } = useLang();
+
   return (
     <div className="table-wrap">
       <table>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Segment</th>
-            <th style={{ textAlign: "right" }}>Kwota</th>
-            <th style={{ textAlign: "right" }}>Dochód</th>
-            <th style={{ textAlign: "right" }}>DTI</th>
-            <th style={{ textAlign: "right" }}>Oproc.</th>
-            <th>Data</th>
-            <th>Status</th>
+            <th>{t.tblId}</th>
+            <th>{t.tblSegment}</th>
+            <th style={{ textAlign: "right" }}>{t.tblAmount}</th>
+            <th style={{ textAlign: "right" }}>{t.tblIncome}</th>
+            <th style={{ textAlign: "right" }}>{t.tblDti}</th>
+            <th style={{ textAlign: "right" }}>{t.tblRate}</th>
+            <th>{t.tblDate}</th>
+            <th>{t.tblStatus}</th>
           </tr>
         </thead>
         <tbody>
           {loans.map((loan) => (
             <tr key={loan.id}>
               <td className="mono">{loan.id}</td>
-              <td>{SEGMENT_LABEL[loan.segment]}</td>
-              <td className="num">{groupedPln(loan.loanAmount)}</td>
-              <td className="num">{groupedPln(loan.annualIncome)}</td>
+              <td>{t.segment[loan.segment]}</td>
+              <td className="num">{grouped(loan.loanAmount, lang)}</td>
+              <td className="num">{grouped(loan.annualIncome, lang)}</td>
               <td className="num">
-                {(loan.loanAmount / loan.annualIncome).toFixed(2).replace(".", ",")}
+                {decimal(loan.loanAmount / loan.annualIncome, lang)}
               </td>
-              <td className="num">{percent(loan.interestRate / 100)}</td>
+              <td className="num">{percent(loan.interestRate / 100, lang)}</td>
               <td className="mono">{loan.issueDate}</td>
               <td>
                 <span className={`pill ${loan.status}`}>
-                  {STATUS_LABEL[loan.status]}
+                  {t.status[loan.status]}
                 </span>
               </td>
             </tr>
