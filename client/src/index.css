@@ -437,6 +437,73 @@ body {
 }
 
 /* =========================================================================
+   Portfolio donut
+   ========================================================================= */
+.donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--s-6);
+  margin-top: var(--s-4);
+  flex-wrap: wrap;
+}
+
+.donut {
+  width: 160px;
+  height: 160px;
+  flex-shrink: 0;
+}
+
+.donut circle {
+  transition: stroke-dasharray 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.donut-num {
+  font-weight: 800;
+  font-size: 28px;
+  fill: var(--ink);
+}
+
+.donut-lbl {
+  font-size: 11px;
+  fill: var(--ink-3);
+  letter-spacing: 0.05em;
+}
+
+.donut-legend {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  min-width: 180px;
+}
+
+.donut-legend li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.donut-legend .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.donut-legend .lg-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.donut-legend .lg-val {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* =========================================================================
    Loans table
    ========================================================================= */
 .table-wrap {

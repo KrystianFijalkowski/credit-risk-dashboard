@@ -4,6 +4,7 @@ import { compactPln, percent, SEGMENT_LABEL } from "./format";
 import { FilterBar } from "./components/FilterBar";
 import { RiskGauge } from "./components/RiskGauge";
 import { SegmentBars } from "./components/SegmentBars";
+import { PortfolioDonut } from "./components/PortfolioDonut";
 import { DtiDefaultChart } from "./components/DtiDefaultChart";
 import { LoansTable } from "./components/LoansTable";
 
@@ -132,6 +133,12 @@ function App() {
             </div>
           </div>
 
+          {/* Portfolio composition */}
+          <section className="section">
+            <h2 className="section-title">Struktura portfela</h2>
+            <PortfolioDonut loans={loans.loans} />
+          </section>
+
           {/* Per-segment breakdown */}
           <section className="section">
             <h2 className="section-title">Ryzyko wg segmentu klienta</h2>
@@ -158,7 +165,7 @@ function App() {
           {/* Recent loans */}
           <section className="section">
             <h2 className="section-title">Ostatnie kredyty</h2>
-            <LoansTable loans={loans.loans.slice(0, 12)} />
+            <LoansTable loans={[...loans.loans].reverse().slice(0, 12)} />
           </section>
         </>
       )}
